@@ -5,10 +5,10 @@ use libopentelemetry::{
     trace::{FutureExt, Span, SpanKind, TraceContextExt, Tracer},
     Context,
 };
+use libtracing_opentelemetry::OtelData;
 use opentelemetry::trace::SpanId;
 use opentelemetry_http::HeaderExtractor;
 use opentelemetry_semantic_conventions::{resource, trace};
-use tracing_opentelemetry::OtelData;
 
 use crate::{
     web::{headers::HeaderMapExt, RealIp},

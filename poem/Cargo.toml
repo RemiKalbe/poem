@@ -36,6 +36,7 @@ opentelemetry = [
     "libopentelemetry",
     "opentelemetry-http",
     "opentelemetry-semantic-conventions",
+    "libtracing-opentelemetry"
 ]
 prometheus = ["libopentelemetry", "opentelemetry-prometheus", "libprometheus"]
 tempfile = ["libtempfile", "tokio/fs"]
@@ -125,6 +126,7 @@ libprometheus = { package = "prometheus", version = "0.13.0", optional = true }
 libopentelemetry = { package = "opentelemetry", version = "0.17.0", features = [
     "metrics",
 ], optional = true }
+libtracing-opentelemetry = { package = "tracing-opentelemetry", version = "0.17.4", optional = true }
 libtempfile = { package = "tempfile", version = "3.2.0", optional = true }
 priority-queue = { version = "1.2.0", optional = true }
 tokio-native-tls = { version = "0.3.0", optional = true }
