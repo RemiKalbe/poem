@@ -6,7 +6,6 @@ use libopentelemetry::{
     Context,
 };
 use libtracing_opentelemetry::OtelData;
-use opentelemetry::trace::SpanId;
 use opentelemetry_http::HeaderExtractor;
 use opentelemetry_semantic_conventions::{resource, trace};
 
@@ -63,19 +62,6 @@ where
     type Output = Response;
 
     async fn call(&self, req: Request) -> Result<Self::Output> {
-        // Get the current span and add trace_id and span_id to it's records.
-        let span = tracing::Span::current();
-        let trace_info = span.extensions().get::<OtelData>().map(|o| {
-            (
-                o.parent_cx.span().span_context().trace_id().to_string(),
-                o.builder.span_id.unwrap_or(SpanId::INVALID).to_string(),
-            )
-        });
-        if let Some((trace_id, span_id)) = trace_info {
-            span.record("trace_id", &trace_id.as_str());
-            span.record("span_id", &span_id.as_str());
-        }
-
         let remote_addr = RealIp::from_request_without_body(&req)
             .await
             .ok()
@@ -102,6 +88,10 @@ where
             .with_kind(SpanKind::Server)
             .with_attributes(attributes)
             .start_with_context(&*self.tracer, &parent_cx);
+
+        // Get span context
+        let tracing_span = tracing::Span::current();
+        tracing_span.record("trace_id", &span.span_context().trace_id().to_string());
 
         span.add_event("request.started".to_string(), vec![]);
 
